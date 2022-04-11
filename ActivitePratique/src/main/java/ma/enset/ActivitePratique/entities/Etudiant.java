@@ -1,15 +1,15 @@
-package ma.enset.Seance6.entities;
+package ma.enset.ActivitePratique.entities;
 
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
@@ -20,17 +20,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 @Entity
 @Data @AllArgsConstructor @NoArgsConstructor
-public class Patient {
+public class Etudiant {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@NotEmpty
-	@Size(min = 2, max= 40)
+	@Size(min = 2)
 	private String nom;
+	@Size(min = 2)
+	private String prenom;
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date dateNaissance;
-	private boolean malade;
-	@DecimalMin("10")
-	@DecimalMax("200")
-	private int score;
+	private String email;
+	@Enumerated(EnumType.STRING)
+	private EnumGenre genre;
+	private boolean regle;
 }

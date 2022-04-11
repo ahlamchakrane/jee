@@ -16,7 +16,7 @@
 		<div class="container mt-4">
 			<div class="card">
 				<div class="card-header">
-				Liste des patients
+				Liste des Etudiants
 				<a sec:authorize="hasAuthority('ADMIN')" class="btn btn-success" th:href="@{/admin/add}">
 					<i class="icon-eye">+</i>
 				</a>
@@ -25,33 +25,37 @@
 					<form method="get" th:action="@{/user/index}">
 						<label>Key word</label>
 						<input type="text" name="keyword" th:value="${keyword}">
-						<button type="submit" class="btn btn-primary">Search</button>
+						<button type="submit" class="btn btn-primary">Chercher</button>
 					</form>
 					<table class="table">
 				<thead>
 					<tr>
 						<th>ID</th>
 						<th>Nom</th>
+						<th>Prenom</th>
+						<th>Email</th>
 						<th>Date</th>
-						<th>Malade</th>
-						<th>Score</th>
+						<th>Genre</th>
+						<th>Discipliné</th>
 						<th>Action</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:each="p:${ListPatients}">
-						<td th:text="${p.id}"></td>
-						<td th:text="${p.nom}"></td>
-						<td th:text="${p.dateNaissance}"></td>
-						<td th:text="${p.malade}"></td>
-						<td th:text="${p.score}"></td>
+					<tr th:each="e:${ListEtudiants}">
+						<td th:text="${e.id}"></td>
+						<td th:text="${e.nom}"></td>
+						<td th:text="${e.prenom}"></td>
+						<td th:text="${e.email}"></td>
+						<td th:text="${e.dateNaissance}"></td>
+						<td th:text="${e.genre}"></td>
+						<td th:text="${e.regle}"></td>
 						<td sec:authorize="hasAuthority('ADMIN')">
-							<a onclick="return confirm('Etes vous sure ?')" class="btn btn-danger" th:href="@{/admin/delete(id=${p.id}, keyword=${keyword}, page=${currentPage})}">
+							<a onclick="return confirm('Etes vous sure ?')" class="btn btn-danger" th:href="@{/admin/delete(id=${e.id}, keyword=${keyword}, page=${currentPage})}">
 								<i class="bi bi-trash"></i>
 							</a>
 						</td>
 						<td sec:authorize="hasAuthority('ADMIN')">
-							<a class="btn btn-warning" th:href="@{/admin/update(id=${p.id}, page=${currentPage}, keyword=${keyword})}">
+							<a class="btn btn-warning" th:href="@{/admin/update(id=${e.id}, page=${currentPage}, keyword=${keyword})}">
 								<i class="bi bi-pen"></i>
 							</a>
 							

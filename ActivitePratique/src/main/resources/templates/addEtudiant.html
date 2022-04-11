@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+				xmlns:layout="http://www.ultraq.nz/thymeleaf/layout"
+				layout:decorate="template1">
+<head>
+	<meta charset="UTF-8">
+	<title>New Patient</title>
+	<link rel="stylesheet" href="/webjars/bootstrap/5.1.3/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/webjars/bootstrap-icons/1.8.1/font/bootstrap-icons.css">
+</head>
+<body>
+	<div layout:fragment="content1">
+<center>
+	<div class="col-md-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">Nouveau Etudiant</div>
+			<div class="panel-body">
+				<form th:action="@{/admin/save}" method="post">
+					<div class="form-group">
+						<label class="control-label">Nom:</label>
+						<input class="form-control" type="text" name="nom" th:value="${etudiant.nom}">
+						<span class="text-danger" th:errors="${etudiant.nom}"></span>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Prenom:</label>
+						<input class="form-control" type="text" name="prenom" th:value="${etudiant.prenom}">
+						<span class="text-danger" th:errors="${etudiant.prenom}"></span>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Email:</label>
+						<input class="form-control" type="text" name="email" th:value="${etudiant.email}">
+						<span class="text-danger" th:errors="${etudiant.email}"></span>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Date Naissance:</label>
+						<input class="form-control" type="date" name="dateNaissance" th:value="${etudiant.dateNaissance}" required>
+						<span class="text-danger" th:errors="${etudiant.dateNaissance}"></span>
+					</div>
+					<div class="form-check">
+					  <input class="form-check-input" type="checkbox" name="regle" id="regle" 
+					  th:value="${etudiant.regle}">
+					  <label class="form-check-label" for="regle">
+					    Discipliné
+					  </label>
+					</div>
+					<div class="form-group">
+			           <label class="control-label">Genre:</label>
+			                <select class="form-control" name="genre" id="genre">
+							    <option value="">--Choisir un genre--</option>
+							    <option value="MASCULIN">Masculin</option>
+							    <option value="FEMININ">Feminin</option>
+							</select>
+			        </div>
+					<button type="submit" class="btn btn-success">Enregistrer</button>
+				</form>
+				</div>
+				</div>
+				</div>
+				</div>
+</center>
+</div>
+</body>
+</html>
