@@ -1,0 +1,255 @@
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item">Home</li>
+          <li class="breadcrumb-item active"><a (click)="onGetAllAccountOperations()"
+              style="cursor: pointer; color: blue;">AccountOperations</a></li>
+        </ol>
+      </div>
+    </div>
+  </div><!-- /.container-fluid -->
+</section>
+<section class="content" style="margin-left: 5%;">
+  <ng-container *ngIf="(search$ | async) as result" [ngSwitch]="result.dataState">
+    <ng-container *ngSwitchCase="DataStateEnum.LOADING">
+    </ng-container>
+    <ng-container *ngSwitchCase="DataStateEnum.ERROR">
+      <div class="alert-danger">
+        {{result.errorMessage}}
+      </div>
+    </ng-container>
+    <ng-container *ngSwitchCase="DataStateEnum.LOADED">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-11">
+            <div class="card  card-secondary">
+              <div class="card-header">
+                <h3 class="card-title" (click)="onGetAllAccountOperations()" style="cursor: pointer;">Account Operations
+
+                  <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modal-ajout">
+                   Transfer amount
+                  </button>
+                </h3>
+                <li class="nav-item d-none d-sm-inline-block" style="float:right">
+                  <!--Search form-->
+                  <form #f="ngForm" (ngSubmit)="onSearch(f.value)" class="form-inline ml-3">
+                    <div class="input-group input-group-sm">
+                      <input ngModel name="keyword" class="form-control form-control-navbar" type="search"
+                        placeholder="Search" aria-label="Search">
+                      <div class="input-group-append">
+                        <button class="btn btn-navbar" type="submit">
+                          <i class="fas fa-search"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                  <!--/Search form-->
+                </li>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th style="width: 7px">#</th>
+                      <th>Date</th>
+                      <th>Amount</th>
+                      <th>Type</th>
+                      <th>Desctiption</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let c of accountOperations | paginate: {itemsPerPage:6, currentPage : page, totalItems:totalLength}">
+                      <td>{{c.id}}</td>
+                      <td>{{c.operationDate}}</td>
+                      <td>{{c.amount}}</td>
+                      <td>{{c.type}}</td>
+                      <td>{{c.description}}</td>
+                      <td style="width: 30%">
+                        <button class="btn btn-danger m-2 " (click)="onDeleteAccountOperation(c.id)"><span
+                            class="fa fa-trash"></span></button>
+                        <button type="button" class="btn btn-warning m-2" (click)="getValue(c.id)"
+                          data-bs-toggle="modal" data-bs-target="#modal-modification">
+                          <span class="fa fa-edit"></span>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="card-footer clearfix">
+                <ul class="pagination pagination-sm m-0 float-right">
+                  <li class="page-item"><pagination-controls class="page-link" (pageChange)="page=$event"></pagination-controls></li>
+                </ul>
+              </div>
+              <!-- /.card-body -->
+              <div class="card-footer clearfix">
+                <ul class="pagination pagination-sm m-0 float-right">
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+</section>
+<!-- /.card -->
+<!--Modal  pour l'ajout-->
+<section class="content">
+  <div class="modal fade" id="modal-ajout">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Transfer operation</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="accountOperationformGroupe" *ngIf="accountOperationformGroupe" #f="ngForm"
+            (ngSubmit)="onSaveAccountOperation(f.value)">
+            <div class="card-body">
+              <div class="form-group">
+                <label for="balance">Select Account destination</label>
+                <select class="form-control" formControlName="idDestination"
+                    [ngClass]="{'is-invalid':submitted && accountOperationformGroupe.controls['idDestination'].errors}"
+                    >
+                    <option>-Select a destination account--</option>
+                    <option *ngFor="let b of bankAccounts" [ngValue]="b.id">{{b.id}} </option>
+                </select>
+                <div *ngIf="submitted && accountOperationformGroupe.controls['idDestination'].errors"
+                    class="invalid-feedback">
+                    <div *ngIf="accountOperationformGroupe.controls['idDestination'].errors['required']">Account is
+                        required</div>
+                </div>
+            </div>
+              <div class="form-group">
+                <label>Ammount</label>
+                <input class="form-control" placeholder="Enter an amount" type="number" min=1 formControlName="amount"
+                  [ngClass]="{'is-invalid':submitted && accountOperationformGroupe.controls['amount'].errors}">
+                <div *ngIf="submitted && accountOperationformGroupe.controls['amount'].errors" class="invalid-feedback">
+                  <div *ngIf="accountOperationformGroupe.controls['amount'].errors['required']">Ammount is required
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /.card-body -->
+            <!-- Modal footer-->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary m-2" [disabled]="!f.valid">Save</button>
+            </div>
+            <!-- Modal /footer-->
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+  <!-- /.modal -->
+</section>
+<!--/Modal pour l'ajout-->
+<!--Modal  pour la modification-->
+<section class="content">
+  <div class="modal fade" id="modal-modification">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Update an Operation</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="accountOperationformGroupeModifiaction" *ngIf="accountOperationformGroupeModifiaction"
+            #f="ngForm" (ngSubmit)="onUpdate(f.value)">
+            <div class="card-body">
+              <div class="form-group">
+                <input class="form-control" type="hidden" formControlName="id"
+                  [ngClass]="{'is-invalid':submitted && accountOperationformGroupeModifiaction.controls['id'].errors}">
+                <label>Date</label>
+                <input type="text" class="form-control" placeholder="Enter a Date"
+                  formControlName="operationDate"
+                  [ngClass]="{'is-invalid':submitted && accountOperationformGroupeModifiaction.controls['operationDate'].errors}" [readonly]=true>
+                <div *ngIf="submitted && accountOperationformGroupeModifiaction.controls['operationDate'].errors"
+                  class="invalid-feedback">
+                  <div *ngIf="accountOperationformGroupeModifiaction.controls['operationDate'].errors['required']">Date
+                    is required</div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Ammount</label>
+                <input class="form-control" placeholder="Enter an amount" type="number" formControlName="amount"
+                  [ngClass]="{'is-invalid':submitted && accountOperationformGroupeModifiaction.controls['amount'].errors}">
+                <div *ngIf="submitted 
+                              && accountOperationformGroupeModifiaction.controls['amount'].errors"
+                  class="invalid-feedback">
+                  <div *ngIf="accountOperationformGroupeModifiaction.controls['amount'].errors['required']">Ammount is
+                    required</div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Type</label>
+                <select class="form-control" formControlName="type"
+                  [ngClass]="{'is-invalid':submitted && accountOperationformGroupeModifiaction.controls['type'].errors}">
+                  <option>-Select an account type--</option>
+                  <option value="CREDIT">CREDIT</option>
+                  <option value="DEBIT">DEBIT</option>
+                </select>
+                <div *ngIf="submitted 
+                              && accountOperationformGroupeModifiaction.controls['type'].errors"
+                  class="invalid-feedback">
+                  <div *ngIf="accountOperationformGroupeModifiaction.controls['type'].errors['required']">Type is
+                    required</div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Description</label>
+                <input class="form-control" placeholder="Enter a description" type="text" formControlName="description"
+                  [ngClass]="{'is-invalid':submitted && accountOperationformGroupeModifiaction.controls['description'].errors}">
+                <div *ngIf="submitted 
+                              && accountOperationformGroupeModifiaction.controls['description'].errors"
+                  class="invalid-feedback">
+                  <div *ngIf="accountOperationformGroupeModifiaction.controls['description'].errors['required']">Type is
+                    required</div>
+                </div>
+              </div>
+            </div>
+            <!-- Modal footer-->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary m-2" [disabled]="!f.valid">Save</button>
+            </div>
+            <!-- Modal /footer-->
+          </form>
+        </div>
+        <!-- /.card-body -->
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+  <!-- /.modal -->
+</section>
+<!--/Modal pour la modification-->
+<script type="text/javascript">
+  $(function () {
+    const Toast = Swal.mixin({
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000
+    });
+
+    $('.swalDefaultSuccess').click(function () {
+      Toast.fire({
+        type: 'success',
+        title: ''
+      })
+    });
+
+  });
+</script>
