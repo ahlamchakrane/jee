@@ -10,12 +10,13 @@ import ma.enset.ProjetJEE.dtos.CurrentAccountDTO;
 import ma.enset.ProjetJEE.dtos.SavingAccountDTO;
 
 public interface BankAccountService {
-	void deleteBankAccount(String accountId);
+	void deleteBankAccount(Long accountId);
 	CurrentAccountDTO saveCurrentBankAccount(BankAccountDTO bankAccountDTO) throws CustomerNotFoundException;
 	SavingAccountDTO saveSavingBankAccount(BankAccountDTO bankAccountDTO) throws CustomerNotFoundException;
 	void updateBankAccountDTO(BankAccountDTO bankAccountDTO);
-	BankAccountDTO getBankAccountDTO(String id) throws BankAccountNotFoundException;
+	BankAccountDTO getBankAccountDTO(Long id) throws BankAccountNotFoundException;
 	List<BankAccountDTO> bankAccountListDTO();
 	List<BankAccountDTO> searchBankAccounts(String keyword);
-	AccountHistoryDTO getAccountHistory(String accountId, int page, int size) throws BankAccountNotFoundException;
+	AccountHistoryDTO getAccountHistory(Long accountId, int page, int size) throws BankAccountNotFoundException;
+	List<BankAccountDTO> listCustomerBankAccounts(Long id);
 }

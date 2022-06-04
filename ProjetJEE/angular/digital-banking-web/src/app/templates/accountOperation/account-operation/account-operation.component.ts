@@ -8,6 +8,7 @@ import { AppDataState, DataStateEnum } from 'src/app/model/dataStateEnum.model';
 import { AccountOperationService } from 'src/app/services/accountOperationService/account-operation.service';
 import { BankAccountService } from 'src/app/services/bankAccontService/bank-account.service';
 import { CustomerService } from 'src/app/services/customerService/customer.service';
+import { LoginService } from 'src/app/services/loginService/login.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -25,6 +26,7 @@ export class AccountOperationComponent implements OnInit {
   idBankAccount: string | any;
   bankAccounts: BankAccount | any;
   idDestination: string | any;
+  idCustomer: number | any;
   amount: number = 0;
   search$: Observable<AppDataState<AccountOperation[]>> | null = null;
   accountOperationformGroupe!: FormGroup;
@@ -37,7 +39,8 @@ export class AccountOperationComponent implements OnInit {
     private formBuilder: FormBuilder,
     private accountOperationService: AccountOperationService,
     private bankAccountService: BankAccountService,
-    private activatedRoute: ActivatedRoute) {
+    private activatedRoute: ActivatedRoute,
+    public loginService : LoginService) {
     this.idBankAccount = this.activatedRoute.snapshot.params['id'];
   }
 
@@ -50,6 +53,7 @@ export class AccountOperationComponent implements OnInit {
     this.bankAccountService.getBankAccounts().subscribe(data => {
       this.bankAccounts = data;
     }, err => {
+      this.loginService.refreshToken();
       Swal.fire('Oups!', 'an error has occurred', 'error')
       this.submitted = false;
       return this.ngOnInit();
@@ -101,6 +105,7 @@ export class AccountOperationComponent implements OnInit {
             )
             return this.ngOnInit();
           }, err => {
+            this.loginService.refreshToken();
             Swal.fire(
               'Canceled',
               'The accountOperation has not been deleted',
@@ -145,6 +150,7 @@ export class AccountOperationComponent implements OnInit {
           this.submitted = false;
           return this.ngOnInit();
         }, err => {
+          this.loginService.refreshToken();
           Swal.fire('Oups!', 'an error has occurred .. Verify your information', 'error')
           this.submitted = false;
           return this.ngOnInit();
@@ -169,11 +175,13 @@ export class AccountOperationComponent implements OnInit {
           this.submitted = false;
           return this.ngOnInit();
         }, err => {
+          this.loginService.refreshToken();
           Swal.fire('Oups!', 'an error has occurred', 'error')
           this.submitted = false;
           return this.ngOnInit();
         })
     }, err => {
+      this.loginService.refreshToken();
       Swal.fire('Oups!', 'an error has occurred', 'error')
       this.submitted = false;
       return this.ngOnInit();

@@ -28,7 +28,6 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public CustomerDTO saveCustomerDTO(CustomerDTO customerDTO) {
-		log.info("Saving new Customer");
 		Customer customer = bankAccountMappersService.fromCustomerDTO(customerDTO);
 		Customer savedCustomer = customerRepository.save(customer);
 		return bankAccountMappersService.fromCustomer(savedCustomer);

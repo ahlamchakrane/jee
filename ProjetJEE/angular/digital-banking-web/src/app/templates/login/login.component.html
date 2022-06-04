@@ -1,26 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Se Connecter</title>
-</head>
-<body>
-  <div class="login-wrapper">
-    <form  class="form" #f="ngForm" (ngSubmit)="onLogin(f.value)" >
-      <!-- <img src="img/logo.png"> -->
-      <h2>Se connecter</h2>
-        <div class="input-group">
-          <input type="text" ngModel="" name="username" required>
-          <label>User Name</label>
+<div class="container" style="margin-left: 25%;">
+  <div class="card col-md-6 offset-3 mt-2">
+    <div style="text-align: center" class="card-header">Log in</div>
+    <div class="card-body">
+      <form [formGroup]="loginFormGroup" (ngSubmit)="login()">
+        <div style="text-align: center"  class="mb-3">
+          <label class="form-label">Username :</label>
+          <input type="text" formControlName="username" class="form-control">
+          <span class="text-danger"
+                *ngIf="loginFormGroup.controls['username'].touched
+                && loginFormGroup.controls['username'].errors
+                && loginFormGroup.controls['username'].errors!['required']">
+            Username is Required
+          </span>
         </div>
-        <div class="input-group">
-           <input type="password" ngModel="" name="password" autocomplete="on" required>
-           <label>Password</label>
+        <div style="text-align: center"  class="mb-3">
+          <label class="form-label">Password :</label>
+          <input type="password" formControlName="password" class="form-control">
+          <span class="text-danger"
+                *ngIf="loginFormGroup.controls['password'].touched
+                && loginFormGroup.controls['password'].errors
+                && loginFormGroup.controls['password'].errors!['password']">
+            password is not valid
+          </span>
         </div>
-        <input type="submit" value="Login" class="submit-btn">
-    </form>
+        <div style="text-align: center"  class="mb-3">
+        <button [disabled]="!loginFormGroup.valid" class="btn btn-info">Login</button>
+        </div>
+      </form>
+    </div>
   </div>
-</body>
-</html>
+</div>

@@ -10,6 +10,11 @@
             <a class="nav-link active" aria-current="page" href="#">Home</a>
           </li>
         </ul>
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" *ngIf="loginService.oui" (click)="onLogout()" style="float: right; cursor: pointer;" >Log out</a>
+          </li>
+        </ul>
       </div>
     </div>
   </nav>

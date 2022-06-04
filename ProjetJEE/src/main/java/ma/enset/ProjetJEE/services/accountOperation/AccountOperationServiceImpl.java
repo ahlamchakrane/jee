@@ -30,7 +30,7 @@ public class AccountOperationServiceImpl implements AccountOperationService {
 		this.bankAccountMappersService = bankAccountMappersService;
 	}
 	@Override
-	public void debit(String accountId, double amount, String description) throws BankAccountNotFoundException, BalanceNotSufficientEception {
+	public void debit(Long accountId, double amount, String description) throws BankAccountNotFoundException, BalanceNotSufficientEception {
 		BankAccount bankAccount = bankAccountRepository.findById(accountId)
 				.orElseThrow(()-> new BankAccountNotFoundException("BankAccount not found"));
 		if(bankAccount.getBalance()<amount)
@@ -46,7 +46,7 @@ public class AccountOperationServiceImpl implements AccountOperationService {
 		bankAccountRepository.save(bankAccount);
 	}
 	@Override
-	public void credit(String accountId, double amount, String description) throws BankAccountNotFoundException {
+	public void credit(Long accountId, double amount, String description) throws BankAccountNotFoundException {
 		BankAccount bankAccount = bankAccountRepository.findById(accountId)
 				.orElseThrow(()-> new BankAccountNotFoundException("BankAccount not found"));
 		AccountOperation accountOperation = new AccountOperation();
@@ -61,13 +61,13 @@ public class AccountOperationServiceImpl implements AccountOperationService {
 	}
 
 	@Override
-	public void transfer(String accountIdSource, String accountDestination, double amount) throws BankAccountNotFoundException, BalanceNotSufficientEception {
+	public void transfer(Long accountIdSource, Long accountDestination, double amount) throws BankAccountNotFoundException, BalanceNotSufficientEception {
 		debit(accountIdSource, amount, "transfer to "+accountDestination);
 		credit(accountDestination, amount, "transfer from"+accountIdSource);
 		
 	}
 	@Override
-	public List<AccountOperationDTO> accountOperationHistory(String accountId) {
+	public List<AccountOperationDTO> accountOperationHistory(Long accountId) {
 		List<AccountOperation> accountOperations = accountOperationRepository.findByBankAccountId(accountId);
 		return accountOperations.stream().map(op-> bankAccountMappersService.fromAccountOperation(op)).collect(Collectors.toList());
 	}
@@ -94,7 +94,7 @@ public class AccountOperationServiceImpl implements AccountOperationService {
 		return accountOperationsDTO;
 	}
 	@Override
-	public List<AccountOperationDTO> listBankAccountOperations(String id) {
+	public List<AccountOperationDTO> listBankAccountOperations(Long id) {
 		BankAccount bankAccount = bankAccountRepository.getById(id);
 		List<AccountOperation> accountOperations = bankAccount.getAccountOperations();
 		List<AccountOperationDTO> accountOperationDTOs = accountOperations.stream().map(acc->bankAccountMappersService.fromAccountOperation(acc)).collect(Collectors.toList());

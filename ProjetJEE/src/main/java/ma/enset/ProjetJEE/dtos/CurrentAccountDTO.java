@@ -6,7 +6,7 @@ import lombok.Data;
 import ma.enset.ProjetJEE.enums.AccountStatus;
 @Data
 public class CurrentAccountDTO extends BankAccountDTO{
-	private String id;
+	private Long id;
 	private double balance;
 	private  Date createdAt;
 	private AccountStatus status;

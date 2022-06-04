@@ -9,6 +9,8 @@ import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -28,10 +30,9 @@ import ma.enset.ProjetJEE.enums.AccountStatus;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "TYPE",length = 4)
 @Data @NoArgsConstructor @AllArgsConstructor
-public class BankAccount {
-	@Id 
-	@Column(length=2)
-	private String id;
+public abstract class BankAccount {
+	@Id @GeneratedValue(strategy= GenerationType.IDENTITY)
+	private Long id;
 	private double balance;
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(pattern = "yyyy-MM-dd")

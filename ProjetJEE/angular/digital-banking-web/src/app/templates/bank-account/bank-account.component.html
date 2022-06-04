@@ -69,11 +69,12 @@
                                             <th>Over Draft</th>
                                             <th>Interest Rate</th>
                                             <th>Operations</th>
-                                            <th>Action</th>
+                                            <th *ngIf="loginService.isAdmin()">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr *ngFor="let b of bankAccounts  | paginate: {itemsPerPage:6, currentPage : page, totalItems:totalLength}">                                            <td>{{b.id}}</td>
+                                        <tr *ngFor="let b of bankAccounts  | paginate: {itemsPerPage:6, currentPage : page, totalItems:totalLength}">
+                                            <td>{{b.id}}</td>
                                             <td>{{b.balance}}</td>
                                             <td>{{b.createdAt}}</td>
                                             <td>{{b.status}}</td>
@@ -95,9 +96,9 @@
                                                     (click)="onViewAccountOperations(b.id)"><span
                                                         class="fa fa-inbox"></span></button>
                                             </td>
-                                            <td style="width: 30%">
+                                            <td style="width: 30%" *ngIf="loginService.isAdmin()">
                                                 <button class="btn btn-danger m-2 "
-                                                    (click)="onDeleteBankAccount(b.id)"><span
+                                                    (click)="onDeleteBankAccount(b.id)" ><span
                                                         class="fa fa-trash"></span></button>
                                                 <button type="button" class="btn btn-warning m-2"
                                                     (click)="getValue(b.id)" data-bs-toggle="modal"
@@ -128,7 +129,7 @@
 </section>
 <!-- /.card -->
 <!--Modal  pour l'ajout current-->
-<section class="content">
+<section class="content" >
     <div class="modal fade" id="modal-ajout-current">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -222,7 +223,7 @@
 </section>
 <!--/Modal pour l'ajout current-->
 <!--Modal  pour l'ajout saving-->
-<section class="content">
+<section class="content" >
     <div class="modal fade" id="modal-ajout-saving">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -315,7 +316,7 @@
 </section>
 <!--/Modal pour l'ajout saving-->
 <!--Modal  pour la modification-->
-<section class="content">
+<section class="content" *ngIf="loginService.isAdmin()">
     <div class="modal fade" id="modal-modification">
         <div class="modal-dialog">
             <div class="modal-content">

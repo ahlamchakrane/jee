@@ -49,7 +49,7 @@ public class BankAccountServiceImpl implements BankAccountService {
 	}	
 
 	@Override
-	public BankAccountDTO getBankAccountDTO(String accountId) throws BankAccountNotFoundException {
+	public BankAccountDTO getBankAccountDTO(Long accountId) throws BankAccountNotFoundException {
 		BankAccount bankAccount = bankAccountRepository.findById(accountId)
 				.orElseThrow(()-> new BankAccountNotFoundException("BankAccount not found"));
 		if(bankAccount instanceof SavingAccount) {
@@ -63,6 +63,13 @@ public class BankAccountServiceImpl implements BankAccountService {
 		
 	}
 
+	@Override
+	public List<BankAccountDTO> listCustomerBankAccounts(Long id) {
+		Customer customer = customerRepository.getById(id);
+		List<BankAccount> bankAccounts = customer.getBankAccounts();
+		List<BankAccountDTO> bankAccountDTOs = bankAccounts.stream().map(acc->bankAccountMappersService.fromBankAccount(acc)).collect(Collectors.toList());
+		return bankAccountDTOs;
+	}
 	
 	@Override
 	public CurrentAccountDTO saveCurrentBankAccount(BankAccountDTO bankAccountDTO)
@@ -72,7 +79,6 @@ public class BankAccountServiceImpl implements BankAccountService {
 			throw new CustomerNotFoundException("Customer not found");
 		}
 		CurrentAccount currentAccount = new CurrentAccount();
-		currentAccount.setId(UUID.randomUUID().toString());
 		currentAccount.setCreatedAt(new Date());
 		currentAccount.setBalance(bankAccountDTO.getBalance());
 		currentAccount.setCustomer(customer);
@@ -91,7 +97,6 @@ public class BankAccountServiceImpl implements BankAccountService {
 			throw new CustomerNotFoundException("Customer not found");
 		}
 		SavingAccount savingAccount = new SavingAccount();
-		savingAccount.setId(UUID.randomUUID().toString());
 		savingAccount.setCreatedAt(new Date());
 		savingAccount.setDescription(bankAccountDTO.getDescription());
 		savingAccount.setBalance(bankAccountDTO.getBalance());
@@ -118,12 +123,12 @@ public class BankAccountServiceImpl implements BankAccountService {
 	}
 
 	@Override
-	public void deleteBankAccount(String accountId) {
+	public void deleteBankAccount(Long accountId) {
 		bankAccountRepository.deleteById(accountId);
 	}
 
 	@Override
-	public AccountHistoryDTO getAccountHistory(String accountId, int page, int size) throws BankAccountNotFoundException {
+	public AccountHistoryDTO getAccountHistory(Long accountId, int page, int size) throws BankAccountNotFoundException {
 		BankAccount bankAccount = bankAccountRepository.findById(accountId).orElse(null);
 		if(bankAccount == null) throw new BankAccountNotFoundException("Account not found");
 		Page<AccountOperation> accountOperations = accountOperationRepository.findByBankAccountId(accountId, PageRequest.of(page, size));

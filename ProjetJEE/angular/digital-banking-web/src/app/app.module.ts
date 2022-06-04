@@ -20,7 +20,6 @@ import { DefaultModule } from './model/default/default.module';
     NgxSpinnerModule
   ],
   exports:[
-    NgxPaginationModule
   ],
   providers: [],
   bootstrap: [AppComponent]

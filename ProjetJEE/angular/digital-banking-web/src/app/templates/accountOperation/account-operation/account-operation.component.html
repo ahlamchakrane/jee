@@ -61,7 +61,7 @@
                       <th>Amount</th>
                       <th>Type</th>
                       <th>Desctiption</th>
-                      <th>Action</th>
+                      <th *ngIf="loginService.isAdmin()">Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -71,9 +71,9 @@
                       <td>{{c.amount}}</td>
                       <td>{{c.type}}</td>
                       <td>{{c.description}}</td>
-                      <td style="width: 30%">
+                      <td style="width: 30%" *ngIf="loginService.isAdmin()">
                         <button class="btn btn-danger m-2 " (click)="onDeleteAccountOperation(c.id)"><span
-                            class="fa fa-trash"></span></button>
+                            class="fa fa-trash" ></span></button>
                         <button type="button" class="btn btn-warning m-2" (click)="getValue(c.id)"
                           data-bs-toggle="modal" data-bs-target="#modal-modification">
                           <span class="fa fa-edit"></span>
@@ -102,7 +102,7 @@
 </section>
 <!-- /.card -->
 <!--Modal  pour l'ajout-->
-<section class="content">
+<section class="content" >
   <div class="modal fade" id="modal-ajout">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -156,7 +156,7 @@
 </section>
 <!--/Modal pour l'ajout-->
 <!--Modal  pour la modification-->
-<section class="content">
+<section class="content" *ngIf="loginService.isAdmin()">
   <div class="modal fade" id="modal-modification">
     <div class="modal-dialog">
       <div class="modal-content">

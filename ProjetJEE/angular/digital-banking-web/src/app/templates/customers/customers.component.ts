@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { catchError, map, Observable, of, startWith} from 'rxjs';
 import { AppDataState, DataStateEnum } from 'src/app/model/dataStateEnum.model';
 import { CustomerService } from 'src/app/services/customerService/customer.service';
+import { LoginService } from 'src/app/services/loginService/login.service';
 import Swal from 'sweetalert2';
 import { Customer } from '../../model/customer.model';
 
@@ -28,7 +29,8 @@ export class CustomersComponent implements OnInit {
   constructor(
     private router: Router,
     private formBuilder: FormBuilder,
-    private customerService: CustomerService) {
+    private customerService: CustomerService,
+    public loginService : LoginService) {
 
   }
 
@@ -94,6 +96,7 @@ export class CustomersComponent implements OnInit {
             )
             return this.ngOnInit();
           }, err => {
+            this.loginService.refreshToken();
             Swal.fire(
               'Canceled',
               'The customer has not been deleted',
@@ -103,6 +106,7 @@ export class CustomersComponent implements OnInit {
           })
 
       } else if (result.dismiss === Swal.DismissReason.cancel) {
+        this.loginService.refreshToken();
         Swal.fire(
           'Canceled',
           'The customer has not been deleted',
@@ -130,6 +134,7 @@ export class CustomersComponent implements OnInit {
         this.submitted = false;
         return this.ngOnInit();
       }, err => {
+        this.loginService.refreshToken();
         Swal.fire('Oups!', 'an error has occurred .. Verify your information', 'error')
         this.submitted = false;
         return this.ngOnInit();
@@ -146,6 +151,7 @@ export class CustomersComponent implements OnInit {
        return this.ngOnInit(); 
        },
       error : (err:any) => {
+        this.loginService.refreshToken();
        Swal.fire('Oups!', 'an error has occurred', 'error')
        this.submitted=false;
        return this.ngOnInit(); 

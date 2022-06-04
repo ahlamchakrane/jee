@@ -8,10 +8,18 @@ import { AccountOperationComponent } from './templates/accountOperation/account-
 import { DefaultComponent } from './templates/default/default.component';
 
 const routes: Routes = [
+  
+  {
+    path:'login',
+    component:LoginComponent,
+  },
+  {
+    path:'',
+    redirectTo:'login', 
+    pathMatch : 'full'
+  },
   {path : "customers", component : CustomersComponent},
-  {path:'login',component:LoginComponent},
-  {path:'',redirectTo:'login',pathMatch : 'full'},
-  {path:'Home',component: DefaultComponent},
+  {path:'home',component: DefaultComponent},
   {path : "customers", component : CustomersComponent},
   {path : "bank-account/:id", component : BankAccountComponent},
   {path : "account-operation/:id", component : AccountOperationComponent},

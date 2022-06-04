@@ -6,6 +6,7 @@ import { BankAccount } from 'src/app/model/bankAccount.model';
 import { AppDataState, DataStateEnum } from 'src/app/model/dataStateEnum.model';
 import { BankAccountService } from 'src/app/services/bankAccontService/bank-account.service';
 import { CustomerService } from 'src/app/services/customerService/customer.service';
+import { LoginService } from 'src/app/services/loginService/login.service';
 import Swal from 'sweetalert2';
 import { CustomersComponent } from '../customers/customers.component';
 
@@ -36,14 +37,15 @@ export class BankAccountComponent implements OnInit {
     private formBuilder: FormBuilder,
     private bankAccountService: BankAccountService,
     private customerService: CustomerService,
-    private activatedRoute: ActivatedRoute) {
+    private activatedRoute: ActivatedRoute,
+    public loginService : LoginService) {
     this.idCustomer = this.activatedRoute.snapshot.params['id'];
 
   }
 
   ngOnInit() {
     //this.authService.oui=true;
-    this.search$ = this.bankAccountService.getBankAccounts().pipe(
+    this.search$ = this.bankAccountService.getCustomerBankAccounts(this.idCustomer).pipe(
       map(data => {
         this.bankAccounts = data;
         return ({ dataState: DataStateEnum.LOADED, data: data })
@@ -70,7 +72,7 @@ export class BankAccountComponent implements OnInit {
 
 
   }
-  getValue(id: string) {
+  getValue(id: number) {
     if (id != null) {
       this.bankAccountService.getBankAccount(id).subscribe(data => {
         this.bankAccount = data;
@@ -88,7 +90,7 @@ export class BankAccountComponent implements OnInit {
     }
   }
   onGetAllBankAccounts() {
-    this.search$ = this.bankAccountService.getBankAccounts().pipe(
+    this.search$ = this.bankAccountService.getCustomerBankAccounts(this.idCustomer).pipe(
       map(data => {
         this.bankAccounts = data;
         return ({ dataState: DataStateEnum.LOADED, data: data })
@@ -100,7 +102,7 @@ export class BankAccountComponent implements OnInit {
   onGestionBankAccounts() {
     this.router.navigateByUrl('bank-account/' + this.idCustomer);
   }
-  onDeleteBankAccount(id: string) {
+  onDeleteBankAccount(id: number) {
     Swal.fire({
       title: 'Are you sure?',
       text: 'This process is irreversible.',
@@ -119,6 +121,7 @@ export class BankAccountComponent implements OnInit {
             )
             return this.ngOnInit();
           }, err => {
+            this.loginService.refreshToken();
             Swal.fire(
               'Canceled',
               'The bank Account has not been deleted',
@@ -153,6 +156,7 @@ export class BankAccountComponent implements OnInit {
         return this.ngOnInit();
       })
     }, err => {
+      this.loginService.refreshToken();
       Swal.fire('Oups!', 'an error has occurred .. Verify your information', 'error')
       this.submitted = false;
       return this.ngOnInit();
@@ -170,11 +174,13 @@ export class BankAccountComponent implements OnInit {
         this.submitted = false;
         return this.ngOnInit();
       }, err => {
+        this.loginService.refreshToken();
         Swal.fire('Oups!', 'an error has occurred .. Verify your information', 'error')
         this.submitted = false;
         return this.ngOnInit();
       })
     }, err => {
+      this.loginService.refreshToken();
       Swal.fire('Oups!', 'an error has occurred .. Verify your information', 'error')
       this.submitted = false;
       return this.ngOnInit();
@@ -202,11 +208,13 @@ export class BankAccountComponent implements OnInit {
           this.submitted = false;
           return this.ngOnInit();
         }, err => {
+          this.loginService.refreshToken();
           Swal.fire('Oups!', 'an error has occurred', 'error')
           this.submitted = false;
           return this.ngOnInit();
         })
     }, err => {
+      this.loginService.refreshToken();
       Swal.fire('Oups!', 'an error has occurred', 'error')
       this.submitted = false;
       return this.ngOnInit();

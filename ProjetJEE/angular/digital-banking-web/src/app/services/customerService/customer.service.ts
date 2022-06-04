@@ -8,24 +8,26 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class CustomerService {
-  
-  constructor(private http:HttpClient) { }
+  headers: any;
+  constructor(private http:HttpClient) {
+    this.headers = {'Authorization': 'Bearer ' + localStorage.getItem("accessToken")};
+   }
   public getCustomers() : Observable<Array<Customer>>{
-    return this.http.get<Array<Customer>>(environment.bachendHost+"/customers");
+    return this.http.get<Array<Customer>>(environment.backendHost+"/customers", {headers: this.headers});
   } 
   public getCustomer(id : number) : Observable<Customer>{
-    return this.http.get<Customer>(environment.bachendHost+"/customers/"+id);
+    return this.http.get<Customer>(environment.backendHost+"/customers/"+id, {headers: this.headers});
   } 
   public searchCustomers(keyword : string) : Observable<Array<Customer>>{
-    return this.http.get<Array<Customer>>(environment.bachendHost+"/customers/search?keyword="+keyword);
+    return this.http.get<Array<Customer>>(environment.backendHost+"/customers/search?keyword="+keyword, {headers: this.headers});
   }
   public saveCustomer(customer : Customer) : Observable<Customer>{
-    return this.http.post<Customer>(environment.bachendHost+"/customers", customer);
+    return this.http.post<Customer>(environment.backendHost+"/customers", customer, {headers: this.headers});
   } 
   public deleteCustomer(id : number) {
-    return this.http.delete(environment.bachendHost+"/customers/"+id);
+    return this.http.delete(environment.backendHost+"/customers/"+id, {headers: this.headers});
   } 
   public updateCustomer(customer : Customer) {
-    return this.http.put(environment.bachendHost+"/customers/"+customer.id, customer);
+    return this.http.put(environment.backendHost+"/customers/"+customer.id, customer, {headers: this.headers});
   } 
 }

@@ -8,7 +8,7 @@ import ma.enset.ProjetJEE.enums.AccountStatus;
 
 @Data
 public class BankAccountDTO {
-	private String id;
+	private Long id;
 	private String type;
 	private double balance;
 	private  Date createdAt;

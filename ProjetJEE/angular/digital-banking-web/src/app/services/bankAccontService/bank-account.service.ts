@@ -8,24 +8,29 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class BankAccountService {
-
-  constructor(private http:HttpClient) { }
-  public getBankAccounts() : Observable<Array<BankAccount>>{
-    return this.http.get<Array<BankAccount>>(environment.bachendHost+"/bankAccounts");
+  headers: any;
+  constructor(private http:HttpClient) {
+    this.headers = {'Authorization': 'Bearer ' + localStorage.getItem("accessToken")};
+   }
+   public getBankAccounts() : Observable<Array<BankAccount>>{
+    return this.http.get<Array<BankAccount>>(environment.backendHost+"/bankAccounts", {headers: this.headers});
   } 
-  public getBankAccount(id : string) : Observable<BankAccount>{
-    return this.http.get<BankAccount>(environment.bachendHost+"/bankAccounts/"+id);
+  public getCustomerBankAccounts(id : number) : Observable<Array<BankAccount>>{
+    return this.http.get<Array<BankAccount>>(environment.backendHost+"/customer/"+id+"/bankAccounts", {headers: this.headers});
+  } 
+  public getBankAccount(id : number) : Observable<BankAccount>{
+    return this.http.get<BankAccount>(environment.backendHost+"/bankAccounts/"+id, {headers: this.headers});
   } 
   public searchBankAccounts(keyword : string) : Observable<Array<BankAccount>>{
-    return this.http.get<Array<BankAccount>>(environment.bachendHost+"/bankAccounts/search?keyword="+keyword);
+    return this.http.get<Array<BankAccount>>(environment.backendHost+"/bankAccounts/search?keyword="+keyword, {headers: this.headers});
   }
   public saveBankAccount(bankAccount: BankAccount) : Observable<BankAccount>{
-    return this.http.post<BankAccount>(environment.bachendHost+"/bankAccounts", bankAccount);
+    return this.http.post<BankAccount>(environment.backendHost+"/bankAccounts", bankAccount, {headers: this.headers});
   } 
-  public deleteBankAccount(id : string) {
-    return this.http.delete(environment.bachendHost+"/bankAccounts/"+id);
+  public deleteBankAccount(id : number) {
+    return this.http.delete(environment.backendHost+"/bankAccounts/"+id, {headers: this.headers});
   } 
-  public updateBankAccount(id : string, bankAccount : BankAccount) {
-    return this.http.put(environment.bachendHost+"/bankAccounts/"+id, bankAccount);
+  public updateBankAccount(id : number, bankAccount : BankAccount) {
+    return this.http.put(environment.backendHost+"/bankAccounts/"+id, bankAccount, {headers: this.headers});
   } 
 }

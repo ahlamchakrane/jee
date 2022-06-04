@@ -73,7 +73,8 @@ public class BankAccountMappersImpl implements BankAccountMappersService {
 	}
 	@Override
 	public BankAccount fromBankAccountDTO(BankAccountDTO bankAccountDTO) {
-		BankAccount bankAccount = new BankAccount();
+		BankAccount bankAccount = new BankAccount() {
+		};
 		if(bankAccountDTO.getType().equals("CurrentAccount"))
 		BeanUtils.copyProperties(bankAccountDTO, bankAccount,"interestRate");
 		else 

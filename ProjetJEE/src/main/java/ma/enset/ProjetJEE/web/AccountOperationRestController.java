@@ -1,5 +1,7 @@
 package ma.enset.ProjetJEE.web;
 import java.util.List;
+
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,35 +26,41 @@ public class AccountOperationRestController {
 	private AccountOperationService accountOperationService;
 	
 	//retourne les information d'un account operation
-	@GetMapping(path = "/user/accountOperations/{id}")
+	@PostAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
+	@GetMapping(path = "/accountOperations/{id}")
 	public AccountOperationDTO getAccountOperation(@PathVariable(name = "id") Long id) {
 		return accountOperationService.getAccountOperationDTO(id);
 	}
 	//recuperer la liste des account op d'un bankAccount
-	@GetMapping(path = "/user/bankAccount/accountOperations/{id}")
-	public List<AccountOperationDTO> getAccountOperations(@PathVariable(name = "id") String id) {
+	@PostAuthorize("hasAuthority('ADMIN') or hasAuthority('USER') ")
+	@GetMapping(path = "/bankAccount/accountOperations/{id}")
+	public List<AccountOperationDTO> getAccountOperations(@PathVariable(name = "id") Long id) {
 		return accountOperationService.listBankAccountOperations(id);
 	}
 	/*@GetMapping(path = "/accountOperations")
 	public List<AccountOperationDTO> getAccountOperations() {
 		return accountOperationService.listAccountOperationDTO();
 	}*/
-	@PutMapping(path = "/admin/transfert/{idSource}")
-	public void creditBankAccount(@PathVariable(name = "idSource") String id,@RequestBody AccountOperationDTO accountOperationDTO) throws BankAccountNotFoundException, BalanceNotSufficientEception {
-		String idDestination = accountOperationDTO.getDescription();
+	@PostAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
+	@PutMapping(path = "/transfert/{idSource}")
+	public void creditBankAccount(@PathVariable(name = "idSource") Long id,@RequestBody AccountOperationDTO accountOperationDTO) throws BankAccountNotFoundException, BalanceNotSufficientEception {
+		Long idDestination = (long) Integer.parseInt(accountOperationDTO.getDescription());
 		double amount = accountOperationDTO.getAmount();
 		accountOperationService.transfer(id, idDestination, amount);
 	}
-	@PutMapping(path = "/admin/accountOperations/{id}")
+	@PostAuthorize("hasAuthority('ADMIN')")
+	@PutMapping(path = "/accountOperations/{id}")
 	public AccountOperationDTO updateAccountOperation(@RequestBody AccountOperationDTO accountOperationDTO, @PathVariable Long id) {
 		accountOperationDTO.setId(id);
 		return accountOperationService.updateAccountOperationDTO(accountOperationDTO);
 	}
-	@DeleteMapping(path = "/admin/accountOperations/{id}")
+	@PostAuthorize("hasAuthority('ADMIN')")
+	@DeleteMapping(path = "/accountOperations/{id}")
 	public void deleteCustomer(@PathVariable Long id) {
 		accountOperationService.deleteAccountOperation(id);
 	}
-	@GetMapping(path = "/user/accountOperations/search")
+	@PostAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
+	@GetMapping(path = "/accountOperations/search")
 	public List<AccountOperationDTO> searchAccountOperations(@RequestParam(name = "keyword", defaultValue ="") String keyword){
 		return accountOperationService.searchAccountOperations("%"+keyword+"%");
 	}
